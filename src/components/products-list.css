@@ -1,0 +1,28 @@
+.products-list {
+    padding-top: 1em;
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20%;
+    justify-content: space-evenly;
+    row-gap: 1em;
+}
+
+.product-card p {
+    margin: 0;
+}
+
+.product-card {
+    height: 180px;
+    padding: 5px 10px 0px 10px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
