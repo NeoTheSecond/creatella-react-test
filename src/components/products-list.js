@@ -74,6 +74,14 @@ export default function Products() {
         // console.log(`${day}-${month}-${year}`)
     }
 
+    const priceFormat = (price) => {
+        var formattedPrice = price / 100
+        return formattedPrice.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        })
+    }
+
     const ProductCard = ({ product }) => {
         const lorem = new LoremIpsum({
             wordsPerSentence: {
@@ -99,7 +107,7 @@ export default function Products() {
                             <li>{lorem.generateSentences(1)}</li>
                         </Card.Text>
                         <Card.Text>
-                            <b>Price: ${product.price}</b>
+                            <b>Price: {priceFormat(product.price)}</b>
                         </Card.Text>
                         <div className="button-container">
                             <Button variant="primary">Find out more!</Button>
