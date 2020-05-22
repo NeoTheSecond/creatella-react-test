@@ -21,8 +21,20 @@
     justify-content: space-between;
 }
 
+.dropdown-container,
 .button-container {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+}
+
+.dropdown-container {
+    padding: 1em 1em 0.5em 0em;
+}
+
+/* .sort-button {
+    width: 100px;
+} */
+#dropdown-button {
+    width: 120px;
 }

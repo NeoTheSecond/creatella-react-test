@@ -3,18 +3,33 @@ import axios from 'axios'
 import './products-list.css'
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
 import { LoremIpsum } from 'lorem-ipsum'
+var defaultOrder = []
 export default function Products() {
     const [products, setProducts] = useState([])
-    const [page, setpage] = useState(1)
-
     useEffect(() => {
         // fetch products
         axios
             .get(`http://localhost:5000/api/products?_page={page}&_limit=20`)
-            .then((res) => setProducts(res.data))
+            .then((res) => {
+                defaultOrder = [...res.data]
+                setProducts(res.data)
+            })
             .catch((err) => console.log(err))
     }, [])
+
+    const [sortBy, setSortBy] = useState('default')
+    useEffect(() => {
+        if (sortBy == 'default') {
+            setProducts(defaultOrder)
+        } else {
+            setProducts([...products].sort((a, b) => a[sortBy] - b[sortBy]))
+        }
+    }, [sortBy])
+
+    const [page, setpage] = useState(1)
 
     const dateFormat = (date) => {
         var formattedDate = new Date(date)
@@ -99,10 +114,33 @@ export default function Products() {
     }
 
     return (
-        <div className="products-list">
-            {products.map((product) => {
-                return <ProductCard key={product.id} product={product} />
-            })}
+        <div>
+            <div className="dropdown-container">
+                <DropdownButton
+                    id="dropdown-button"
+                    className="sort-button"
+                    title={sortBy}
+                    size="lg"
+                >
+                    <Dropdown.Item onClick={() => setSortBy('default')}>
+                        default
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setSortBy('size')}>
+                        size
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setSortBy('price')}>
+                        price
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setSortBy('id')}>
+                        id
+                    </Dropdown.Item>
+                </DropdownButton>
+            </div>
+            <div className="products-list">
+                {products.map((product) => {
+                    return <ProductCard key={product.id} product={product} />
+                })}
+            </div>
         </div>
     )
 }
