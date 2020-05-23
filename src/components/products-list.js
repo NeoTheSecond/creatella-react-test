@@ -10,14 +10,14 @@ var defaultOrder = []
 export default function Products() {
     // products list and its ref
     const [products, setProducts] = useState([])
-    const productsRef = React.useRef(products)
+    const productsRef = useRef(products)
     useEffect(() => {
         // update productsRef when product changes
         productsRef.current = products
     }, [products])
     // page counter and its ref
     const [page, setpage] = useState(0)
-    const pageRef = React.useRef(page)
+    const pageRef = useRef(page)
     useEffect(() => {
         // update pageRef when page changes
         pageRef.current = page
@@ -68,22 +68,20 @@ export default function Products() {
     const getProduct = () => {
         console.log(`getting data on page: ${pageRef.current + 1}`)
         // fetch products
-        if (!loading) {
-            setloading(true)
-            axios
-                .get(
-                    `http://localhost:5000/api/products?_page=${
-                        pageRef.current + 1
-                    }&_limit=20`
-                )
-                .then((res) => {
-                    setloading(false)
-                    defaultOrder = [...defaultOrder, ...res.data]
-                    setProducts([...productsRef.current, ...res.data])
-                    setpage(pageRef.current + 1)
-                })
-                .catch((err) => console.log(err))
-        }
+        setloading(true)
+        axios
+            .get(
+                `http://localhost:5000/api/products?_page=${
+                    pageRef.current + 1
+                }&_limit=20`
+            )
+            .then((res) => {
+                setloading(false)
+                defaultOrder = [...defaultOrder, ...res.data]
+                setProducts([...productsRef.current, ...res.data])
+                setpage(pageRef.current + 1)
+            })
+            .catch((err) => console.log(err))
     }
 
     const dateFormat = (date) => {
@@ -192,7 +190,7 @@ export default function Products() {
                     return <ProductCard key={product.id} product={product} />
                 })}
             </div>
-            {!loading && <div ref={setElement}>loading... </div>}
+            {products.length !== 500 && <div ref={setElement}>loading... </div>}
         </div>
     )
 }
