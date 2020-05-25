@@ -129,7 +129,7 @@ export default function Products() {
         })
     }
 
-    const ProductCard = ({ product }) => {
+    const ProductCard = ({ product, ad, adKey }) => {
         // individual product
         const lorem = new LoremIpsum({
             wordsPerSentence: {
@@ -138,32 +138,47 @@ export default function Products() {
             },
         })
         return (
-            <Card style={{}}>
+            <Card style={{ width: '100%' }}>
                 <Card.Header className="text-center">
-                    size: {product.size}
+                    {ad ? 'Advertisement' : `size: ${product.size}`}
                 </Card.Header>
                 <Card.Body className="card-body">
-                    <Card.Title
-                        style={{ fontSize: product.size, textAlign: 'center' }}
-                    >
-                        {product.face}
-                    </Card.Title>
+                    {ad ? (
+                        <Card.Img
+                            variant="top"
+                            className=""
+                            src={'http://localhost:5000/api/ads/?r=' + adKey}
+                        />
+                    ) : (
+                        <Card.Title
+                            style={{
+                                fontSize: product.size,
+                                textAlign: 'center',
+                            }}
+                        >
+                            {product.face}
+                        </Card.Title>
+                    )}
                     <div>
                         <Card.Text>
                             <li>{lorem.generateSentences(1)}</li>
                             <li>{lorem.generateSentences(1)}</li>
                         </Card.Text>
-                        <Card.Text>
-                            <b>Price: {priceFormat(product.price)}</b>
-                        </Card.Text>
+                        {ad ? null : (
+                            <Card.Text>
+                                <b>Price: {priceFormat(product.price)}</b>
+                            </Card.Text>
+                        )}
                         <div className="button-container">
                             <Button variant="primary">Find out more!</Button>
                         </div>
                     </div>
                 </Card.Body>
-                <Card.Footer className="text-muted">
-                    {dateFormat(product.date)}
-                </Card.Footer>
+                {ad ? null : (
+                    <Card.Footer className="text-muted">
+                        {dateFormat(product.date)}
+                    </Card.Footer>
+                )}
             </Card>
         )
     }
@@ -194,7 +209,25 @@ export default function Products() {
             </div>
             <div className="products-list">
                 {products.map((product, i) => {
-                    return <ProductCard key={product.id} product={product} />
+                    if ((i + 1) % 20 !== 0) {
+                        return (
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                ad={false}
+                            />
+                        )
+                    } else {
+                        var adKey = Math.floor(Math.random() * 1000)
+                        return [
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                ad={false}
+                            />,
+                            <ProductCard key={adKey} ad={true} adKey={adKey} />,
+                        ]
+                    }
                 })}
             </div>
             {/* {products.length !== 500 ? (

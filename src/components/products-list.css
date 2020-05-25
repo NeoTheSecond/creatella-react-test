@@ -46,6 +46,11 @@
     animation: spin 2s linear infinite;
 }
 
+.ad {
+    width: 100%;
+    height: auto;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
