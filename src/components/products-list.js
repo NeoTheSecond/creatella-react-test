@@ -7,6 +7,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { LoremIpsum } from 'lorem-ipsum'
 var defaultOrder = []
+var prevFetch = []
 export default function Products() {
     // products list and its ref
     const [products, setProducts] = useState([])
@@ -43,10 +44,12 @@ export default function Products() {
             (entries) => {
                 const observedElement = entries[0]
                 if (observedElement.isIntersecting) {
+                    console.log('intersected')
+
                     getProduct()
                 }
             },
-            { threshold: 1 }
+            { threshold: 1, rootMargin: '0px 0px 200% 0px' }
         )
     )
     // element state to be observered
@@ -76,10 +79,14 @@ export default function Products() {
                 }&_limit=20`
             )
             .then((res) => {
-                setloading(false)
-                defaultOrder = [...defaultOrder, ...res.data]
-                setProducts([...productsRef.current, ...res.data])
-                setpage(pageRef.current + 1)
+                // prevent intersection observation call back being called multiple time and appending the same product in the previous call
+                if (JSON.stringify(prevFetch) !== JSON.stringify(res.data)) {
+                    prevFetch = res.data
+                    setloading(false)
+                    defaultOrder = [...defaultOrder, ...res.data]
+                    setProducts([...productsRef.current, ...res.data])
+                    setpage(pageRef.current + 1)
+                }
             })
             .catch((err) => console.log(err))
     }
@@ -190,7 +197,14 @@ export default function Products() {
                     return <ProductCard key={product.id} product={product} />
                 })}
             </div>
-            {products.length !== 500 && <div ref={setElement}>loading... </div>}
+            {/* {products.length !== 500 ? (
+                <div ref={setElement} className="loader"></div>
+            )} */}
+            {products.length !== 500 ? (
+                <div ref={setElement} className="loader"></div>
+            ) : (
+                <h1 style={{ textAlign: 'center' }}>~ End Of Catalogue ~</h1>
+            )}
         </div>
     )
 }
